@@ -1,0 +1,17 @@
+<div
+  id="chat-channel-row-{{channel.id}}"
+  class="{{rowClassNames}}"
+  {{on "click" (fn this.handleClick)}}
+  {{on "keydown" (fn this.handleKeydown)}}
+  role="button"
+  tabindex="0"
+>
+  <div role="button" class="chat-channel-title">
+    <span class="category-chat-badge" style={{html-safe (concat "color: #" channel.chatable.color)}}>
+      {{d-icon "microphone"}}
+    </span>
+    <span class="category-chat-name">
+      {{channel.title}}
+    </span>
+  </div>
+</div>

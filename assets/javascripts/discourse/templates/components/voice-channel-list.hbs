@@ -1,0 +1,18 @@
+<div class="chat-channel-divider">
+  <span class="channel-title">{{i18n "chat.voice_channels"}}</span>
+</div>
+
+<div id="voice-channels" class={{voiceChannelClasses}}>
+  {{#if voiceChannelsEmpty}}
+    <div class="voice-channel-empty-message">
+      {{i18n "chat.no_voice_channels"}}
+      {{#link-to "chat.index"}}
+        {{i18n "chat.click_to_join"}}
+      {{/link-to}}
+    </div>
+  {{else}}
+    {{#each voiceChannels as |channel|}}
+      {{voice-channel-row channel=channel switchChannel=onSelect}}
+    {{/each}}
+  {{/if}}
+</div>

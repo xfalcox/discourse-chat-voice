@@ -10,5 +10,7 @@
 
 enabled_site_setting :plugin_name_enabled
 
+register_svg_icon "microphone"
+
 after_initialize do
 end
