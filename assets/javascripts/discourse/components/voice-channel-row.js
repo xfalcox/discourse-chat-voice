@@ -5,9 +5,12 @@ import { equal } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import loadScript from "discourse/lib/load-script";
 import { action } from "@ember/object";
+import { ajax } from "discourse/lib/ajax";
+import { popupAjaxError } from "discourse/lib/ajax-error";
 
 export default Component.extend({
   channel: null,
+  id: 666666,
   switchChannel: null,
   isDirectMessageRow: equal("channel.chatable_type", "DirectMessageChannel"),
   participating: false,
@@ -30,11 +33,29 @@ export default Component.extend({
 
     this.participating = !this.participating;
 
-    loadScript("/plugins/discourse-plugin-name/vendor/simplepeer.min.js").then(() => {
+    loadScript("/plugins/discourse-plugin-name/vendor/simplepeer.min.js").then(async () => {
 
-      this.messageBus.subscribe("/chat/audio/666666/membership", (data) => {
+      this.messageBus.subscribe(`/chat-voice/${this.id}/signalling`, (data) => {
         console.log(data);
       });
+
+      let stream = await navigator.mediaDevices.getUserMedia({
+        video: false,
+        audio: true
+      });
+
+      let myPeer = new SimplePeer({ initiator: true, stream: stream, trickle: false });
+
+      myPeer.on('signal', signal => {
+        ajax('/chat-voice/voice_channel/announce', {
+          type: "POST",
+          data: {
+            channel: this.id,
+            signal: JSON.stringify(signal)
+          },
+        }).catch(popupAjaxError);
+      });
+
       
     });
 
